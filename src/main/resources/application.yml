@@ -1,0 +1,28 @@
+server:
+    port: 8052
+    servlet:
+        context-path: /
+        encoding:
+            charset: UTF-8
+            enabled: true
+            force: true
+
+spring:
+    security:
+        user:
+            name: admin
+            password: 1234
+    application:
+        name: flix-session
+    devtools:
+        restart:
+            enabled: true
+
+    data:
+        redis:
+            host: localhost
+            port: 6379
+    kafka:
+        bootstrap-servers: localhost:9092
+        consumer:
+            group-id: flix-session
