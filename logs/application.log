@@ -3664,3 +3664,45 @@ java.net.ConnectException: Connection refused: no further information
 2025-03-12 17:49:15.361  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8052 (http) with context path '/' 
 2025-03-12 17:49:15.365  c.z.f.FlixSessionApplication - Started FlixSessionApplication in 0.28 seconds (process running for 597.611) 
 2025-03-12 17:49:15.366  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged 
+2025-03-12 17:52:30.463  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification) 
+2025-03-12 17:52:30.464  o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
+2025-03-12 17:52:30.465  o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8052"] 
+2025-03-12 17:52:30.994  o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
+2025-03-12 17:52:30.995  o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8052"] 
+2025-03-12 17:52:31.150  c.z.f.FlixSessionApplication - Starting FlixSessionApplication using Java 17.0.12 with PID 12764 (D:\workspace\flix\flix-session\target\classes started by user in D:\workspace\flix\flix-session) 
+2025-03-12 17:52:31.151  c.z.f.FlixSessionApplication - No active profile set, falling back to 1 default profile: "default" 
+2025-03-12 17:52:31.238  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-12 17:52:31.239  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode. 
+2025-03-12 17:52:31.241  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 1 ms. Found 0 Redis repository interfaces. 
+2025-03-12 17:52:31.286  o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8052 (http) 
+2025-03-12 17:52:31.287  o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8052"] 
+2025-03-12 17:52:31.287  o.a.c.c.StandardService - Starting service [Tomcat] 
+2025-03-12 17:52:31.288  o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
+2025-03-12 17:52:31.299  o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
+2025-03-12 17:52:31.299  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 147 ms 
+2025-03-12 17:52:31.374  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729 
+2025-03-12 17:52:31.377  o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8052"] 
+2025-03-12 17:52:31.380  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8052 (http) with context path '/' 
+2025-03-12 17:52:31.383  c.z.f.FlixSessionApplication - Started FlixSessionApplication in 0.249 seconds (process running for 793.63) 
+2025-03-12 17:52:31.384  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged 
+2025-03-12 17:52:37.867  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification) 
+2025-03-12 17:52:37.868  o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
+2025-03-12 17:52:37.869  o.a.c.h.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8052"] 
+2025-03-12 17:52:38.453  o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
+2025-03-12 17:52:38.454  o.a.c.h.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8052"] 
+2025-03-12 17:52:38.627  c.z.f.FlixSessionApplication - Starting FlixSessionApplication using Java 17.0.12 with PID 12764 (D:\workspace\flix\flix-session\target\classes started by user in D:\workspace\flix\flix-session) 
+2025-03-12 17:52:38.628  c.z.f.FlixSessionApplication - No active profile set, falling back to 1 default profile: "default" 
+2025-03-12 17:52:38.711  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-12 17:52:38.711  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode. 
+2025-03-12 17:52:38.715  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 2 ms. Found 0 Redis repository interfaces. 
+2025-03-12 17:52:38.761  o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8052 (http) 
+2025-03-12 17:52:38.762  o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8052"] 
+2025-03-12 17:52:38.763  o.a.c.c.StandardService - Starting service [Tomcat] 
+2025-03-12 17:52:38.763  o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
+2025-03-12 17:52:38.773  o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
+2025-03-12 17:52:38.774  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 145 ms 
+2025-03-12 17:52:38.853  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729 
+2025-03-12 17:52:38.857  o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8052"] 
+2025-03-12 17:52:38.860  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8052 (http) with context path '/' 
+2025-03-12 17:52:38.864  c.z.f.FlixSessionApplication - Started FlixSessionApplication in 0.256 seconds (process running for 801.11) 
+2025-03-12 17:52:38.865  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged 
