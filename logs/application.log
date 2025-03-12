@@ -3706,3 +3706,51 @@ java.net.ConnectException: Connection refused: no further information
 2025-03-12 17:52:38.860  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8052 (http) with context path '/' 
 2025-03-12 17:52:38.864  c.z.f.FlixSessionApplication - Started FlixSessionApplication in 0.256 seconds (process running for 801.11) 
 2025-03-12 17:52:38.865  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged 
+2025-03-12 20:22:07.190  c.z.f.FlixSessionApplicationTests - Starting FlixSessionApplicationTests using Java 17.0.12 with PID 20680 (started by qlqla in C:\workspace\flix\flix-session) 
+2025-03-12 20:22:07.191  c.z.f.FlixSessionApplicationTests - No active profile set, falling back to 1 default profile: "default" 
+2025-03-12 20:22:07.763  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-12 20:22:07.764  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode. 
+2025-03-12 20:22:07.791  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 14 ms. Found 0 Redis repository interfaces. 
+2025-03-12 20:22:08.916  c.z.f.FlixSessionApplicationTests - Started FlixSessionApplicationTests in 2.112 seconds (process running for 2.987) 
+2025-03-12 20:22:47.318  c.z.f.FlixSessionApplication - Starting FlixSessionApplication using Java 17.0.12 with PID 27616 (C:\workspace\flix\flix-session\target\classes started by qlqla in C:\workspace\flix\flix-session) 
+2025-03-12 20:22:47.319  c.z.f.FlixSessionApplication - No active profile set, falling back to 1 default profile: "default" 
+2025-03-12 20:22:47.342  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable 
+2025-03-12 20:22:47.343  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG' 
+2025-03-12 20:22:47.652  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-12 20:22:47.654  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode. 
+2025-03-12 20:22:47.671  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 9 ms. Found 0 Redis repository interfaces. 
+2025-03-12 20:22:47.979  o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8052 (http) 
+2025-03-12 20:22:47.985  o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8052"] 
+2025-03-12 20:22:47.985  o.a.c.c.StandardService - Starting service [Tomcat] 
+2025-03-12 20:22:47.986  o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
+2025-03-12 20:22:48.010  o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
+2025-03-12 20:22:48.010  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 667 ms 
+2025-03-12 20:22:48.441  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729 
+2025-03-12 20:22:48.448  o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8052"] 
+2025-03-12 20:22:48.458  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8052 (http) with context path '/' 
+2025-03-12 20:22:48.465  c.z.f.FlixSessionApplication - Started FlixSessionApplication in 1.434 seconds (process running for 1.652) 
+2025-03-12 20:24:24.103  o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
+2025-03-12 20:24:24.130  o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
+2025-03-12 20:24:40.503  c.z.f.FlixSessionApplication - Starting FlixSessionApplication using Java 17.0.12 with PID 23052 (C:\workspace\flix\flix-session\target\classes started by qlqla in C:\workspace\flix\flix-session) 
+2025-03-12 20:24:40.504  c.z.f.FlixSessionApplication - No active profile set, falling back to 1 default profile: "default" 
+2025-03-12 20:24:40.535  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable 
+2025-03-12 20:24:40.535  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG' 
+2025-03-12 20:24:41.162  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-12 20:24:41.164  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode. 
+2025-03-12 20:24:41.182  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 8 ms. Found 0 Redis repository interfaces. 
+2025-03-12 20:24:41.500  o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8052 (http) 
+2025-03-12 20:24:41.510  o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8052"] 
+2025-03-12 20:24:41.512  o.a.c.c.StandardService - Starting service [Tomcat] 
+2025-03-12 20:24:41.512  o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
+2025-03-12 20:24:41.554  o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
+2025-03-12 20:24:41.555  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1020 ms 
+2025-03-12 20:24:42.433  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729 
+2025-03-12 20:24:42.441  o.s.b.a.e.w.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator' 
+2025-03-12 20:24:42.490  o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8052"] 
+2025-03-12 20:24:42.504  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8052 (http) with context path '/' 
+2025-03-12 20:24:42.522  c.z.f.FlixSessionApplication - Started FlixSessionApplication in 2.351 seconds (process running for 2.7) 
+2025-03-12 20:24:43.492  o.a.c.c.C.[.[.[/] - Initializing Spring DispatcherServlet 'dispatcherServlet' 
+2025-03-12 20:24:43.492  o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet' 
+2025-03-12 20:24:43.493  o.s.w.s.DispatcherServlet - Completed initialization in 1 ms 
+2025-03-12 20:25:25.475  o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
+2025-03-12 20:25:25.507  o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
