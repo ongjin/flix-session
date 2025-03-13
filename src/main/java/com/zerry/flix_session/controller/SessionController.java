@@ -43,6 +43,10 @@ public class SessionController {
 
     @PutMapping
     public ResponseEntity<ApiResponse<SessionData>> updateSession(@RequestBody SessionData sessionData) {
+        SessionData existing = sessionService.getSession(sessionData.getSessionId());
+        if (existing == null) {
+            return ResponseEntity.status(404).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
+        }
         SessionData updated = sessionService.updateSession(sessionData);
         return ResponseEntity.ok(ApiResponse.success("세션 업데이트 완료", updated));
     }

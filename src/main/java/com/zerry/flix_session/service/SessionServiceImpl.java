@@ -1,5 +1,6 @@
 package com.zerry.flix_session.service;
 
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ public class SessionServiceImpl implements SessionService {
         sessionRepository.saveSession(sessionData);
         // Kafka 이벤트 발행 (옵션)
         sessionEventProducer.sendSessionEvent("create", sessionData);
+        webSocketHandler.broadcast("세션 생성: " + sessionData.getSessionId());
         return sessionData;
     }
 
@@ -42,7 +44,7 @@ public class SessionServiceImpl implements SessionService {
         sessionRepository.saveSession(sessionData);
         // Kafka 이벤트 발행 (옵션)
         sessionEventProducer.sendSessionEvent("update", sessionData);
-
+        webSocketHandler.broadcastSessionUpdate(sessionData.getSessionId(), "세션 업데이트 완료");
         renewSession(sessionData.getSessionId());
         return sessionData;
     }
@@ -50,6 +52,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void deleteSession(String sessionId) {
         sessionRepository.deleteSession(sessionId);
+        webSocketHandler.broadcastSessionUpdate(sessionId, "세션 삭제 완료");
         // Kafka 이벤트 발행 (옵션)
         sessionEventProducer.sendSessionEvent("delete", new SessionData(sessionId, null, null, null, 0, null, null));
     }

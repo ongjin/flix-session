@@ -3754,3 +3754,19 @@ java.net.ConnectException: Connection refused: no further information
 2025-03-12 20:24:43.493  o.s.w.s.DispatcherServlet - Completed initialization in 1 ms 
 2025-03-12 20:25:25.475  o.s.b.w.e.t.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete 
 2025-03-12 20:25:25.507  o.s.b.w.e.t.GracefulShutdown - Graceful shutdown complete 
+2025-03-13 17:24:07.347  c.z.f.FlixSessionApplication - Starting FlixSessionApplication using Java 17.0.12 with PID 4672 (D:\workspace\flix\flix-session\target\classes started by user in D:\workspace\flix) 
+2025-03-13 17:24:07.348  c.z.f.FlixSessionApplication - No active profile set, falling back to 1 default profile: "default" 
+2025-03-13 17:24:07.531  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode 
+2025-03-13 17:24:07.532  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode. 
+2025-03-13 17:24:07.538  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces. 
+2025-03-13 17:24:07.668  o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8052 (http) 
+2025-03-13 17:24:07.670  o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8052"] 
+2025-03-13 17:24:07.671  o.a.c.c.StandardService - Starting service [Tomcat] 
+2025-03-13 17:24:07.672  o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.36] 
+2025-03-13 17:24:07.688  o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext 
+2025-03-13 17:24:07.689  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 339 ms 
+2025-03-13 17:24:07.945  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729 
+2025-03-13 17:24:07.951  o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8052"] 
+2025-03-13 17:24:07.957  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8052 (http) with context path '/' 
+2025-03-13 17:24:07.962  c.z.f.FlixSessionApplication - Started FlixSessionApplication in 0.645 seconds (process running for 26427.325) 
+2025-03-13 17:24:07.963  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged 

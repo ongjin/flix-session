@@ -1,6 +1,5 @@
 package com.zerry.flix_session.service;
 
-import com.zerry.flix_session.dto.PatchRequest;
 import com.zerry.flix_session.model.SessionData;
 
 public interface SessionService {
