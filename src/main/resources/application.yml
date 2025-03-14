@@ -20,10 +20,5 @@ spring:
 
     data:
         redis:
-            host: localhost
+            host: redis
             port: 6379
-
-    kafka:
-        bootstrap-servers: localhost:9092
-        consumer:
-            group-id: flix-session
