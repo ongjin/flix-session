@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class SessionData {
     @Id
     private String sessionId; // userId + "-" + deviceId
-    private Long userId; // 사용자 ID
+    private String userId; // 사용자 ID
     private Long contentId; // 재생 중인 콘텐츠 ID
     private String deviceId; // 디바이스 식별자(예: "WEB", "MOBILE_12")
     private int lastPosition; // 마지막 재생 위치 (초 단위)
