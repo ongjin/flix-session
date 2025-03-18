@@ -31,6 +31,10 @@ public class RedisConfig {
         // key는 String, value는 JSON 직렬화
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+
         template.afterPropertiesSet();
         return template;
     }

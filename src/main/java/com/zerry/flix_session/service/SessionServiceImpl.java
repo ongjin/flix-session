@@ -1,8 +1,16 @@
 package com.zerry.flix_session.service;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zerry.flix_session.model.SessionData;
+import com.zerry.flix_session.repository.SessionDataRepository;
 import com.zerry.flix_session.repository.SessionRepository;
 import com.zerry.flix_session.websocket.SessionWebSocketHandler;
 
@@ -11,41 +19,59 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
-    private final SessionRepository sessionRepository;
+    @Autowired
+    private SessionDataRepository sessionDataRepository;
 
     private final SessionWebSocketHandler webSocketHandler;
 
-    private static final long DEFAULT_SESSION_TTL = 3600; // 1시간
-
     @Override
     public SessionData createSession(SessionData sessionData) {
-        sessionRepository.saveSession(sessionData);
+        // 새로운 세션 ID 생성
+        sessionData.setSessionId(UUID.randomUUID().toString());
+        sessionData.setCreatedAt(Instant.now());
+        sessionData.setUpdatedAt(Instant.now());
+        if (sessionData.getStatus() == null) {
+            sessionData.setStatus("active");
+        }
         webSocketHandler.broadcast("세션 생성: " + sessionData.getSessionId());
-        return sessionData;
+        return sessionDataRepository.save(sessionData);
+    }
+
+    /**
+     * 전체 세션 조회
+     */
+    @Override
+    public List<SessionData> getAllSessions() {
+        List<SessionData> sessions = new ArrayList<>();
+        sessionDataRepository.findAll().forEach(sessions::add);
+        return sessions;
+    }
+
+    /**
+     * 전체 세션 삭제
+     */
+    @Override
+    public void deleteAllSessions() {
+        sessionDataRepository.deleteAll();
     }
 
     @Override
     public SessionData getSession(String sessionId) {
-        return sessionRepository.findSessionById(sessionId);
+        Optional<SessionData> optional = sessionDataRepository.findById(sessionId);
+        return optional.orElse(null);
     }
 
     @Override
     public SessionData updateSession(SessionData sessionData) {
-        sessionRepository.saveSession(sessionData);
+        sessionData.setUpdatedAt(Instant.now());
         webSocketHandler.broadcastSessionUpdate(sessionData.getSessionId(), "세션 업데이트 완료");
-        renewSession(sessionData.getSessionId());
-        return sessionData;
+        return sessionDataRepository.save(sessionData);
     }
 
     @Override
     public void deleteSession(String sessionId) {
-        sessionRepository.deleteSession(sessionId);
+        sessionDataRepository.deleteById(sessionId);
         webSocketHandler.broadcastSessionUpdate(sessionId, "세션 삭제 완료");
     }
 
-    @Override
-    public void renewSession(String sessionId) {
-        // 특정 이벤트 발생 시 세션 TTL만 연장
-        sessionRepository.updateSessionTTL(sessionId, DEFAULT_SESSION_TTL);
-    }
 }

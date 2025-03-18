@@ -1,7 +1,9 @@
 package com.zerry.flix_session.controller;
 
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,16 +38,25 @@ public class SessionController {
     public ResponseEntity<ApiResponse<SessionData>> getSession(@PathVariable String sessionId) {
         SessionData found = sessionService.getSession(sessionId);
         if (found == null) {
-            return ResponseEntity.status(404).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
         }
         return ResponseEntity.ok(ApiResponse.success(found));
+    }
+
+    /**
+     * 전체 세션 조회 엔드포인트
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<SessionData>>> getAllSessions() {
+        List<SessionData> sessions = sessionService.getAllSessions();
+        return ResponseEntity.ok(ApiResponse.success("전체 세션 조회 성공", sessions));
     }
 
     @PutMapping
     public ResponseEntity<ApiResponse<SessionData>> updateSession(@RequestBody SessionData sessionData) {
         SessionData existing = sessionService.getSession(sessionData.getSessionId());
         if (existing == null) {
-            return ResponseEntity.status(404).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
         }
         SessionData updated = sessionService.updateSession(sessionData);
         return ResponseEntity.ok(ApiResponse.success("세션 업데이트 완료", updated));
@@ -58,7 +69,7 @@ public class SessionController {
 
         SessionData existing = sessionService.getSession(sessionId);
         if (existing == null) {
-            return ResponseEntity.status(404).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
         }
         // 부분 필드만 갱신
         if (patchRequest.getLastPosition() != null) {
@@ -71,11 +82,8 @@ public class SessionController {
             existing.setDeviceInfo(patchRequest.getDeviceInfo());
         }
 
-        // 실제 저장 & TTL 갱신
+        // 실제 저장
         sessionService.updateSession(existing);
-
-        // WebSocket 알림 등
-        // webSocketHandler.broadcastSessionUpdate(sessionId, "patched");
 
         return ResponseEntity.ok(ApiResponse.success("세션 부분 업데이트 완료", existing));
     }
@@ -84,5 +92,14 @@ public class SessionController {
     public ResponseEntity<ApiResponse<?>> deleteSession(@PathVariable String sessionId) {
         sessionService.deleteSession(sessionId);
         return ResponseEntity.ok(ApiResponse.success("세션 삭제 완료", null));
+    }
+
+    /**
+     * 전체 세션 삭제 엔드포인트
+     */
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<?>> deleteAllSessions() {
+        sessionService.deleteAllSessions();
+        return ResponseEntity.ok(ApiResponse.success("전체 세션 삭제 완료", null));
     }
 }
