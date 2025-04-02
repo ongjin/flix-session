@@ -5,25 +5,20 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.zerry.session.dto.PatchRequest;
-import com.zerry.session.model.SessionData;
+import com.zerry.session.dto.SessionData;
+import com.zerry.session.model.SessionStatus;
 import com.zerry.session.response.ApiResponse;
 import com.zerry.session.service.SessionService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
-@RequestMapping("/session")
+@RequestMapping("/api/v1/sessions")
 @RequiredArgsConstructor
 public class SessionController {
     private final SessionService sessionService;
@@ -35,31 +30,54 @@ public class SessionController {
     }
 
     @GetMapping("/{sessionId}")
-    public ResponseEntity<ApiResponse<SessionData>> getSession(@PathVariable String sessionId) {
-        SessionData found = sessionService.getSession(sessionId);
-        if (found == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
-        }
-        return ResponseEntity.ok(ApiResponse.success(found));
+    public ResponseEntity<SessionData> getSession(@PathVariable String sessionId) {
+        return ResponseEntity.ok(sessionService.getSession(sessionId));
     }
 
-    /**
-     * 전체 세션 조회 엔드포인트
-     */
+    @PutMapping("/{sessionId}/refresh")
+    public ResponseEntity<Void> refreshSession(@PathVariable String sessionId) {
+        sessionService.refreshSession(sessionId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{sessionId}")
+    public ResponseEntity<Void> deleteSession(@PathVariable String sessionId) {
+        sessionService.deleteSession(sessionId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<SessionData>> getUserSessions(@PathVariable String userId) {
+        return ResponseEntity.ok(sessionService.getUserSessions(userId));
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<SessionData>> getActiveSessions() {
+        return ResponseEntity.ok(sessionService.getActiveSessions());
+    }
+
+    @PutMapping("/{sessionId}/status")
+    public ResponseEntity<Void> updateSessionStatus(
+            @PathVariable String sessionId,
+            @RequestBody SessionStatus status) {
+        sessionService.updateSessionStatus(sessionId, status);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
-    public ResponseEntity<ApiResponse<List<SessionData>>> getAllSessions() {
-        List<SessionData> sessions = sessionService.getAllSessions();
-        return ResponseEntity.ok(ApiResponse.success("전체 세션 조회 성공", sessions));
+    public ResponseEntity<List<SessionData>> getAllSessions() {
+        return ResponseEntity.ok(sessionService.getAllSessions());
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse<SessionData>> updateSession(@RequestBody SessionData sessionData) {
-        SessionData existing = sessionService.getSession(sessionData.getSessionId());
-        if (existing == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail("세션을 찾을 수 없습니다."));
-        }
-        SessionData updated = sessionService.updateSession(sessionData);
-        return ResponseEntity.ok(ApiResponse.success("세션 업데이트 완료", updated));
+    public ResponseEntity<SessionData> updateSession(@RequestBody SessionData sessionData) {
+        return ResponseEntity.ok(sessionService.updateSession(sessionData));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAllSessions() {
+        sessionService.deleteAllSessions();
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{sessionId}")
@@ -76,7 +94,7 @@ public class SessionController {
             existing.setLastPosition(patchRequest.getLastPosition());
         }
         if (patchRequest.getStatus() != null) {
-            existing.setStatus(patchRequest.getStatus());
+            existing.setStatus(SessionStatus.valueOf(patchRequest.getStatus()));
         }
         if (patchRequest.getDeviceInfo() != null) {
             existing.setDeviceInfo(patchRequest.getDeviceInfo());
@@ -86,20 +104,5 @@ public class SessionController {
         sessionService.updateSession(existing);
 
         return ResponseEntity.ok(ApiResponse.success("세션 부분 업데이트 완료", existing));
-    }
-
-    @DeleteMapping("/{sessionId}")
-    public ResponseEntity<ApiResponse<?>> deleteSession(@PathVariable String sessionId) {
-        sessionService.deleteSession(sessionId);
-        return ResponseEntity.ok(ApiResponse.success("세션 삭제 완료", null));
-    }
-
-    /**
-     * 전체 세션 삭제 엔드포인트
-     */
-    @DeleteMapping
-    public ResponseEntity<ApiResponse<?>> deleteAllSessions() {
-        sessionService.deleteAllSessions();
-        return ResponseEntity.ok(ApiResponse.success("전체 세션 삭제 완료", null));
     }
 }

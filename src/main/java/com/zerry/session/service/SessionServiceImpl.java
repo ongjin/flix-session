@@ -1,77 +1,217 @@
 package com.zerry.session.service;
 
-import java.time.Instant;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.zerry.session.model.SessionData;
-import com.zerry.session.repository.SessionDataRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.zerry.session.dto.SessionData;
+import com.zerry.session.model.Session;
+import com.zerry.session.model.SessionStatus;
+import com.zerry.session.model.SessionType;
 import com.zerry.session.repository.SessionRepository;
-import com.zerry.session.websocket.SessionWebSocketHandler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
-    @Autowired
-    private SessionDataRepository sessionDataRepository;
-
-    private final SessionWebSocketHandler webSocketHandler;
+    private final RedisTemplate<String, Session> redisTemplate;
+    private static final long SESSION_TTL_HOURS = 24;
 
     @Override
+    @Transactional
+    public SessionData createSession(String userId, String deviceInfo, String ipAddress) {
+        String sessionId = UUID.randomUUID().toString();
+
+        Session session = Session.builder()
+                .sessionId(sessionId)
+                .userId(userId)
+                .deviceInfo(deviceInfo)
+                .ipAddress(ipAddress)
+                .lastAccessTime(LocalDateTime.now())
+                .expiryTime(LocalDateTime.now().plusHours(SESSION_TTL_HOURS))
+                .status(SessionStatus.ACTIVE)
+                .type(determineSessionType(deviceInfo))
+                .build();
+
+        redisTemplate.opsForValue().set(
+                "session:" + sessionId,
+                session,
+                SESSION_TTL_HOURS,
+                TimeUnit.HOURS);
+
+        return convertToSessionData(session);
+    }
+
+    @Override
+    @Transactional
     public SessionData createSession(SessionData sessionData) {
-        // 새로운 세션 ID 생성
-        sessionData.setSessionId(UUID.randomUUID().toString());
-        sessionData.setCreatedAt(Instant.now());
-        sessionData.setUpdatedAt(Instant.now());
-        if (sessionData.getStatus() == null) {
-            sessionData.setStatus("active");
+        if (sessionData.getSessionId() == null) {
+            sessionData.setSessionId(UUID.randomUUID().toString());
         }
-        webSocketHandler.broadcast("세션 생성: " + sessionData.getSessionId());
-        return sessionDataRepository.save(sessionData);
-    }
+        if (sessionData.getLastAccessTime() == null) {
+            sessionData.setLastAccessTime(LocalDateTime.now());
+        }
+        if (sessionData.getExpiryTime() == null) {
+            sessionData.setExpiryTime(LocalDateTime.now().plusHours(SESSION_TTL_HOURS));
+        }
+        if (sessionData.getStatus() == null) {
+            sessionData.setStatus(SessionStatus.ACTIVE);
+        }
+        if (sessionData.getType() == null) {
+            sessionData.setType(determineSessionType(sessionData.getDeviceInfo()));
+        }
 
-    /**
-     * 전체 세션 조회
-     */
-    @Override
-    public List<SessionData> getAllSessions() {
-        List<SessionData> sessions = new ArrayList<>();
-        sessionDataRepository.findAll().forEach(sessions::add);
-        return sessions;
-    }
+        Session session = convertToSession(sessionData);
+        redisTemplate.opsForValue().set(
+                "session:" + session.getSessionId(),
+                session,
+                SESSION_TTL_HOURS,
+                TimeUnit.HOURS);
 
-    /**
-     * 전체 세션 삭제
-     */
-    @Override
-    public void deleteAllSessions() {
-        sessionDataRepository.deleteAll();
+        return convertToSessionData(session);
     }
 
     @Override
     public SessionData getSession(String sessionId) {
-        Optional<SessionData> optional = sessionDataRepository.findById(sessionId);
-        return optional.orElse(null);
+        Session session = redisTemplate.opsForValue().get("session:" + sessionId);
+        if (session == null) {
+            throw new RuntimeException("세션을 찾을 수 없습니다: " + sessionId);
+        }
+        return convertToSessionData(session);
     }
 
     @Override
-    public SessionData updateSession(SessionData sessionData) {
-        sessionData.setUpdatedAt(Instant.now());
-        webSocketHandler.broadcastSessionUpdate(sessionData.getSessionId(), "세션 업데이트 완료");
-        return sessionDataRepository.save(sessionData);
+    @Transactional
+    public void refreshSession(String sessionId) {
+        Session session = convertToSession(getSession(sessionId));
+        session.setLastAccessTime(LocalDateTime.now());
+        session.setExpiryTime(LocalDateTime.now().plusHours(SESSION_TTL_HOURS));
+
+        redisTemplate.opsForValue().set(
+                "session:" + sessionId,
+                session,
+                SESSION_TTL_HOURS,
+                TimeUnit.HOURS);
     }
 
     @Override
+    @Transactional
     public void deleteSession(String sessionId) {
-        sessionDataRepository.deleteById(sessionId);
-        webSocketHandler.broadcastSessionUpdate(sessionId, "세션 삭제 완료");
+        redisTemplate.delete("session:" + sessionId);
     }
 
+    @Override
+    public List<SessionData> getUserSessions(String userId) {
+        return redisTemplate.keys("session:*")
+                .stream()
+                .map(key -> redisTemplate.opsForValue().get(key))
+                .filter(session -> session != null && session.getUserId().equals(userId))
+                .map(this::convertToSessionData)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SessionData> getActiveSessions() {
+        return redisTemplate.keys("session:*")
+                .stream()
+                .map(key -> redisTemplate.opsForValue().get(key))
+                .filter(session -> session != null && session.getStatus() == SessionStatus.ACTIVE)
+                .map(this::convertToSessionData)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void updateSessionStatus(String sessionId, SessionStatus status) {
+        Session session = convertToSession(getSession(sessionId));
+        session.setStatus(status);
+
+        redisTemplate.opsForValue().set(
+                "session:" + sessionId,
+                session,
+                SESSION_TTL_HOURS,
+                TimeUnit.HOURS);
+    }
+
+    @Override
+    public List<SessionData> getAllSessions() {
+        return redisTemplate.keys("session:*")
+                .stream()
+                .map(key -> redisTemplate.opsForValue().get(key))
+                .filter(session -> session != null)
+                .map(this::convertToSessionData)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public SessionData updateSession(SessionData sessionData) {
+        Session session = convertToSession(sessionData);
+        redisTemplate.opsForValue().set(
+                "session:" + session.getSessionId(),
+                session,
+                SESSION_TTL_HOURS,
+                TimeUnit.HOURS);
+
+        return convertToSessionData(session);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllSessions() {
+        redisTemplate.keys("session:*").forEach(redisTemplate::delete);
+    }
+
+    private SessionType determineSessionType(String deviceInfo) {
+        if (deviceInfo == null) {
+            return SessionType.OTHER;
+        }
+
+        String lowerDeviceInfo = deviceInfo.toLowerCase();
+        if (lowerDeviceInfo.contains("mobile") || lowerDeviceInfo.contains("android")
+                || lowerDeviceInfo.contains("ios")) {
+            return SessionType.MOBILE;
+        } else if (lowerDeviceInfo.contains("tv") || lowerDeviceInfo.contains("smart-tv")) {
+            return SessionType.TV;
+        } else {
+            return SessionType.WEB;
+        }
+    }
+
+    private SessionData convertToSessionData(Session session) {
+        return SessionData.builder()
+                .sessionId(session.getSessionId())
+                .userId(session.getUserId())
+                .deviceInfo(session.getDeviceInfo())
+                .ipAddress(session.getIpAddress())
+                .lastAccessTime(session.getLastAccessTime())
+                .expiryTime(session.getExpiryTime())
+                .status(session.getStatus())
+                .type(session.getType())
+                .build();
+    }
+
+    private Session convertToSession(SessionData sessionData) {
+        return Session.builder()
+                .sessionId(sessionData.getSessionId())
+                .userId(sessionData.getUserId())
+                .deviceInfo(sessionData.getDeviceInfo())
+                .ipAddress(sessionData.getIpAddress())
+                .lastAccessTime(sessionData.getLastAccessTime())
+                .expiryTime(sessionData.getExpiryTime())
+                .status(sessionData.getStatus())
+                .type(sessionData.getType())
+                .build();
+    }
 }
