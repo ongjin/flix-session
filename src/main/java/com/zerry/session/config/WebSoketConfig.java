@@ -1,11 +1,11 @@
-package com.zerry.flix_session.config;
+package com.zerry.session.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.zerry.flix_session.websocket.SessionWebSocketHandler;
+import com.zerry.session.websocket.SessionWebSocketHandler;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,9 +1,9 @@
-package com.zerry.flix_session.repository;
+package com.zerry.session.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.zerry.flix_session.model.SessionData;
+import com.zerry.session.model.SessionData;
 
 @Repository
 public interface SessionDataRepository extends CrudRepository<SessionData, String> {

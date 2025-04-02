@@ -1,4 +1,4 @@
-package com.zerry.flix_session.config;
+package com.zerry.session.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

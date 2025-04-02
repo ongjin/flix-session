@@ -1,4 +1,4 @@
-package com.zerry.flix_session.service;
+package com.zerry.session.service;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -9,10 +9,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zerry.flix_session.model.SessionData;
-import com.zerry.flix_session.repository.SessionDataRepository;
-import com.zerry.flix_session.repository.SessionRepository;
-import com.zerry.flix_session.websocket.SessionWebSocketHandler;
+import com.zerry.session.model.SessionData;
+import com.zerry.session.repository.SessionDataRepository;
+import com.zerry.session.repository.SessionRepository;
+import com.zerry.session.websocket.SessionWebSocketHandler;
 
 import lombok.RequiredArgsConstructor;
 

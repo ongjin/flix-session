@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.zerry</groupId>
-	<artifactId>flix-session</artifactId>
+	<artifactId>session</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>flix-session</name>
-	<description>CYJ-flix-session</description>
+	<name>session</name>
+	<description>CYJ-session</description>
 	<url/>
 	<licenses>
 		<license/>

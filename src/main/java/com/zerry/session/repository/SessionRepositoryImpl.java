@@ -1,11 +1,11 @@
-package com.zerry.flix_session.repository;
+package com.zerry.session.repository;
 
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.zerry.flix_session.model.SessionData;
+import com.zerry.session.model.SessionData;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.zerry.flix_session.controller;
+package com.zerry.session.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zerry.flix_session.dto.PatchRequest;
-import com.zerry.flix_session.model.SessionData;
-import com.zerry.flix_session.response.ApiResponse;
-import com.zerry.flix_session.service.SessionService;
+import com.zerry.session.dto.PatchRequest;
+import com.zerry.session.model.SessionData;
+import com.zerry.session.response.ApiResponse;
+import com.zerry.session.service.SessionService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,6 +1,6 @@
-package com.zerry.flix_session.repository;
+package com.zerry.session.repository;
 
-import com.zerry.flix_session.model.SessionData;
+import com.zerry.session.model.SessionData;
 
 public interface SessionRepository {
     void saveSession(SessionData sessionData);

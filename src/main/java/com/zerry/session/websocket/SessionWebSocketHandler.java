@@ -1,4 +1,4 @@
-package com.zerry.flix_session.websocket;
+package com.zerry.session.websocket;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.zerry.flix_session.model;
+package com.zerry.session.model;
 
 import java.time.Instant;
 

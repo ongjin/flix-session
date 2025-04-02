@@ -1,8 +1,8 @@
-package com.zerry.flix_session.service;
+package com.zerry.session.service;
 
 import java.util.List;
 
-import com.zerry.flix_session.model.SessionData;
+import com.zerry.session.model.SessionData;
 
 public interface SessionService {
     SessionData createSession(SessionData sessionData);

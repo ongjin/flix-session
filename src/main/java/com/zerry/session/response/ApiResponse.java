@@ -1,4 +1,4 @@
-package com.zerry.flix_session.response;
+package com.zerry.session.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

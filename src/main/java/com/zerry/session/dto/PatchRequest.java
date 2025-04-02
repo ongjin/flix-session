@@ -1,4 +1,4 @@
-package com.zerry.flix_session.dto;
+package com.zerry.session.dto;
 
 import lombok.Data;
 

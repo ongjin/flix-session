@@ -1,4 +1,4 @@
-package com.zerry.flix_session.websocket;
+package com.zerry.session.websocket;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
