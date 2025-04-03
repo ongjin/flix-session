@@ -5,5 +5,6 @@ public enum SessionStatus {
     INACTIVE, // 비활성 세션
     EXPIRED, // 만료된 세션
     TERMINATED, // 종료된 세션
-    ERROR // 오류 상태
+    ERROR, // 오류 상태
+    PAUSED // 일시 중지 상태
 }
