@@ -1,7 +1,6 @@
 package com.zerry.session.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import com.zerry.session.dto.PatchRequest;
 import com.zerry.session.dto.SessionData;
 import com.zerry.session.dto.StatusUpdateRequest;
-import com.zerry.session.model.SessionStatus;
 import com.zerry.session.response.ApiResponse;
 import com.zerry.session.service.SessionService;
 

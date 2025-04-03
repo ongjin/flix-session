@@ -38,8 +38,8 @@ public class SessionServiceImpl implements SessionService {
         }
 
         // 기본값 설정
-        if (sessionData.getLastAccessTime() == null) {
-            sessionData.setLastAccessTime(LocalDateTime.now());
+        if (sessionData.getLastAccessTimeStr() == null) {
+            sessionData.setLastAccessTimeStr(LocalDateTime.now());
         }
         if (sessionData.getStatus() == null) {
             sessionData.setStatus(SessionStatus.ACTIVE.name());
@@ -77,7 +77,7 @@ public class SessionServiceImpl implements SessionService {
     public SessionData refreshSession(String sessionId) {
         SessionData session = getSession(sessionId);
         if (session != null) {
-            session.setLastAccessTime(LocalDateTime.now());
+            session.setLastAccessTimeStr(LocalDateTime.now());
             sessionRepository.update(session);
             return session;
         }

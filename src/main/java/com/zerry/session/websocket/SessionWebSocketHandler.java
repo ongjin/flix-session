@@ -13,9 +13,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerry.session.model.SessionEvent;
-import com.zerry.session.model.SessionStatus;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 
 @Slf4j
 @Component
@@ -25,7 +25,7 @@ public class SessionWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         String userId = extractUserId(session);
         if (userId != null) {
             userSessions.put(userId, session);
@@ -40,7 +40,7 @@ public class SessionWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) throws Exception {
         String userId = extractUserId(session);
         log.info("Received message from user: {} - Message: {}", userId, message.getPayload());
 
@@ -54,7 +54,7 @@ public class SessionWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) throws Exception {
         String userId = extractUserId(session);
         log.error("Transport Error - User: {}, Session: {}", userId, session.getId(), exception);
 
@@ -63,7 +63,7 @@ public class SessionWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) throws Exception {
         String userId = extractUserId(session);
         cleanupSession(userId, session);
         log.info("WebSocket Disconnected - User: {}, Status: {}", userId, status);
