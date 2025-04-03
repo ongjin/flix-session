@@ -1,6 +1,7 @@
 package com.zerry.session.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.zerry.session.dto.SessionData;
 import com.zerry.session.model.SessionStatus;
@@ -12,7 +13,7 @@ public interface SessionService {
 
     SessionData refreshSession(String sessionId);
 
-    SessionData deleteSession(String sessionId);
+    Optional<SessionData> deleteSession(String sessionId);
 
     List<SessionData> getUserSessions(String userId);
 

@@ -57,15 +57,6 @@ public class SessionRedisRepository {
         redisTemplate.delete(sessionKey);
     }
 
-    public void deleteByUserId(String userId) {
-        String userSessionsKey = USER_SESSIONS_KEY_PREFIX + userId;
-        List<Object> sessionIds = redisTemplate.opsForList().range(userSessionsKey, 0, -1);
-
-        if (sessionIds != null) {
-            sessionIds.forEach(id -> deleteBySessionId((String) id));
-        }
-    }
-
     public List<SessionData> findAll() {
         return redisTemplate.keys(SESSION_KEY_PREFIX + "*").stream()
                 .map(key -> (SessionData) redisTemplate.opsForValue().get(key))

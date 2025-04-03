@@ -2,6 +2,7 @@ package com.zerry.session.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -84,13 +85,13 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionData deleteSession(String sessionId) {
-        SessionData session = getSession(sessionId);
-        if (session != null) {
+    public Optional<SessionData> deleteSession(String sessionId) {
+        Optional<SessionData> session = sessionRepository.findBySessionId(sessionId);
+        if (session.isPresent()) {
             sessionRepository.deleteBySessionId(sessionId);
             return session;
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

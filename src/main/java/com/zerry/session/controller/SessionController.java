@@ -2,6 +2,7 @@ package com.zerry.session.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +45,13 @@ public class SessionController {
 
     @DeleteMapping("/{sessionId}")
     public ResponseEntity<ApiResponse<SessionData>> deleteSession(@PathVariable String sessionId) {
-        SessionData deleted = sessionService.deleteSession(sessionId);
-        return ResponseEntity.ok(ApiResponse.success("세션 삭제 완료", deleted));
+        Optional<SessionData> deletedSession = sessionService.deleteSession(sessionId);
+        if (deletedSession.isPresent()) {
+            return ResponseEntity.ok(ApiResponse.success("세션 삭제 완료", deletedSession.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("세션을 찾을 수 없습니다: " + sessionId));
+        }
     }
 
     @GetMapping("/user/{userId}")

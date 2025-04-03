@@ -74,9 +74,6 @@ public class SessionWebSocketHandler extends TextWebSocketHandler {
             case "heartbeat":
                 handleHeartbeat(userId);
                 break;
-            case "status_update":
-                handleStatusUpdate(userId, event);
-                break;
             default:
                 log.warn("Unknown event type: {} from user: {}", event.getType(), userId);
         }
@@ -86,14 +83,6 @@ public class SessionWebSocketHandler extends TextWebSocketHandler {
         WebSocketSession session = userSessions.get(userId);
         if (session != null && session.isOpen()) {
             sendMessage(session, new SessionEvent("heartbeat_ack", userId, "pong"));
-        }
-    }
-
-    private void handleStatusUpdate(String userId, SessionEvent event) {
-        // 상태 업데이트를 해당 사용자의 세션에만 전송
-        WebSocketSession session = userSessions.get(userId);
-        if (session != null && session.isOpen()) {
-            sendMessage(session, event);
         }
     }
 
