@@ -2,22 +2,23 @@ package com.zerry.session.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
 import com.zerry.session.dto.SessionData;
 import com.zerry.session.model.SessionStatus;
 import com.zerry.session.model.SessionType;
+import com.zerry.session.repository.SessionRedisRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
-    private final Map<String, SessionData> sessions = new ConcurrentHashMap<>();
+    private final SessionRedisRepository sessionRepository;
 
     @Override
     public SessionData createSession(SessionData sessionData) {
@@ -40,13 +41,13 @@ public class SessionServiceImpl implements SessionService {
             sessionData.setLastAccessTime(LocalDateTime.now());
         }
         if (sessionData.getStatus() == null) {
-            sessionData.setStatus(SessionStatus.ACTIVE);
+            sessionData.setStatus(SessionStatus.ACTIVE.name());
         }
         if (sessionData.getType() == null) {
             sessionData.setType(determineSessionType(sessionData.getDeviceInfo()));
         }
 
-        sessions.put(sessionData.getSessionId(), sessionData);
+        sessionRepository.save(sessionData);
         return sessionData;
     }
 
@@ -68,14 +69,15 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionData getSession(String sessionId) {
-        return sessions.get(sessionId);
+        return sessionRepository.findBySessionId(sessionId).orElse(null);
     }
 
     @Override
     public SessionData refreshSession(String sessionId) {
-        SessionData session = sessions.get(sessionId);
+        SessionData session = getSession(sessionId);
         if (session != null) {
             session.setLastAccessTime(LocalDateTime.now());
+            sessionRepository.update(session);
             return session;
         }
         return null;
@@ -83,28 +85,32 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionData deleteSession(String sessionId) {
-        return sessions.remove(sessionId);
+        SessionData session = getSession(sessionId);
+        if (session != null) {
+            sessionRepository.deleteBySessionId(sessionId);
+            return session;
+        }
+        return null;
     }
 
     @Override
     public List<SessionData> getUserSessions(String userId) {
-        return sessions.values().stream()
-                .filter(session -> session.getUserId().equals(userId))
-                .toList();
+        return sessionRepository.findByUserId(userId);
     }
 
     @Override
     public List<SessionData> getActiveSessions() {
-        return sessions.values().stream()
-                .filter(session -> session.getStatus() == SessionStatus.ACTIVE)
+        return sessionRepository.findAll().stream()
+                .filter(session -> SessionStatus.ACTIVE.name().equals(session.getStatus()))
                 .toList();
     }
 
     @Override
     public SessionData updateSessionStatus(String sessionId, SessionStatus status) {
-        SessionData session = sessions.get(sessionId);
+        SessionData session = getSession(sessionId);
         if (session != null) {
-            session.setStatus(status);
+            session.setStatus(status.name());
+            sessionRepository.update(session);
             return session;
         }
         return null;
@@ -112,19 +118,19 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public List<SessionData> getAllSessions() {
-        return sessions.values().stream().toList();
+        return sessionRepository.findAll();
     }
 
     @Override
     public SessionData updateSession(SessionData sessionData) {
-        sessions.put(sessionData.getSessionId(), sessionData);
+        sessionRepository.update(sessionData);
         return sessionData;
     }
 
     @Override
     public List<SessionData> deleteAllSessions() {
-        List<SessionData> deletedSessions = sessions.values().stream().toList();
-        sessions.clear();
-        return deletedSessions;
+        List<SessionData> allSessions = getAllSessions();
+        allSessions.forEach(session -> sessionRepository.deleteBySessionId(session.getSessionId()));
+        return allSessions;
     }
 }

@@ -101,7 +101,7 @@ public class SessionController {
             existing.setLastPosition(patchRequest.getLastPosition());
         }
         if (patchRequest.getStatus() != null) {
-            existing.setStatus(SessionStatus.valueOf(patchRequest.getStatus()));
+            existing.setStatus(patchRequest.getStatus());
         }
         if (patchRequest.getDeviceInfo() != null) {
             existing.setDeviceInfo(patchRequest.getDeviceInfo());
