@@ -2,6 +2,7 @@ package com.zerry.session.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -23,7 +24,7 @@ public class SessionRedisRepository {
         String sessionKey = SESSION_KEY_PREFIX + sessionData.getSessionId();
         String userSessionsKey = USER_SESSIONS_KEY_PREFIX + sessionData.getUserId();
 
-        redisTemplate.opsForValue().set(sessionKey, sessionData);
+        redisTemplate.opsForValue().set(sessionKey, sessionData, 30, TimeUnit.MINUTES);
         redisTemplate.opsForList().rightPush(userSessionsKey, sessionData.getSessionId().toString());
     }
 
@@ -101,6 +102,9 @@ public class SessionRedisRepository {
     }
 
     public void update(SessionData sessionData) {
-        save(sessionData);
+        String sessionKey = SESSION_KEY_PREFIX + sessionData.getSessionId();
+
+        // 세션 데이터 업데이트 및 TTL 갱신 (30분)
+        redisTemplate.opsForValue().set(sessionKey, sessionData, 30, TimeUnit.MINUTES);
     }
 }

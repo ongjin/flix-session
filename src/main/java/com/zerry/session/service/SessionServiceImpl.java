@@ -111,7 +111,13 @@ public class SessionServiceImpl implements SessionService {
     public SessionData refreshSession(String sessionId) {
         SessionData session = getSession(sessionId);
         if (session != null) {
+            // 마지막 접근 시간 업데이트
             session.setLastAccessTime(LocalDateTime.now());
+
+            // 만료 시간 갱신 (30분)
+            session.setExpiresAt(LocalDateTime.now().plus(30, ChronoUnit.MINUTES));
+
+            // Redis에 저장 (TTL 갱신)
             sessionRepository.update(session);
             return session;
         }
