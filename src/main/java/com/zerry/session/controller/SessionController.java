@@ -11,7 +11,6 @@ import com.zerry.session.dto.PatchRequest;
 import com.zerry.session.dto.SessionData;
 import com.zerry.session.dto.SessionSearchRequest;
 import com.zerry.session.dto.StatusUpdateRequest;
-import com.zerry.session.model.SessionStatus;
 import com.zerry.session.response.ApiResponse;
 import com.zerry.session.service.SessionService;
 
