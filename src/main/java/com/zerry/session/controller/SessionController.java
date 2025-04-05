@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.zerry.session.dto.PatchRequest;
 import com.zerry.session.dto.SessionData;
+import com.zerry.session.dto.SessionSearchRequest;
 import com.zerry.session.dto.StatusUpdateRequest;
+import com.zerry.session.model.SessionStatus;
 import com.zerry.session.response.ApiResponse;
 import com.zerry.session.service.SessionService;
 
@@ -32,13 +34,21 @@ public class SessionController {
     @GetMapping("/{sessionId}")
     public ResponseEntity<ApiResponse<SessionData>> getSession(@PathVariable String sessionId) {
         SessionData session = sessionService.getSession(sessionId);
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.fail("세션을 찾을 수 없습니다."));
+        }
         return ResponseEntity.ok(ApiResponse.success("세션 조회 완료", session));
     }
 
     @PutMapping("/{sessionId}/refresh")
     public ResponseEntity<ApiResponse<SessionData>> refreshSession(@PathVariable String sessionId) {
-        SessionData refreshed = sessionService.refreshSession(sessionId);
-        return ResponseEntity.ok(ApiResponse.success("세션 갱신 완료", refreshed));
+        SessionData session = sessionService.refreshSession(sessionId);
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.fail("세션을 찾을 수 없습니다."));
+        }
+        return ResponseEntity.ok(ApiResponse.success("세션 갱신 완료", session));
     }
 
     @DeleteMapping("/{sessionId}")
@@ -55,7 +65,7 @@ public class SessionController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<SessionData>>> getUserSessions(@PathVariable String userId) {
         List<SessionData> sessions = sessionService.getUserSessions(userId);
-        return ResponseEntity.ok(ApiResponse.success("사용자 세션 목록 조회 완료", sessions));
+        return ResponseEntity.ok(ApiResponse.success("유저 세션 조회 완료", sessions));
     }
 
     @GetMapping("/active")
@@ -68,8 +78,12 @@ public class SessionController {
     public ResponseEntity<ApiResponse<SessionData>> updateSessionStatus(
             @PathVariable String sessionId,
             @RequestBody StatusUpdateRequest request) {
-        SessionData updated = sessionService.updateSessionStatus(sessionId, request.getStatus());
-        return ResponseEntity.ok(ApiResponse.success("세션 상태 업데이트 완료", updated));
+        SessionData session = sessionService.updateSessionStatus(sessionId, request.getStatus());
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.fail("세션을 찾을 수 없습니다."));
+        }
+        return ResponseEntity.ok(ApiResponse.success("세션 상태 업데이트 완료", session));
     }
 
     @GetMapping
@@ -80,6 +94,14 @@ public class SessionController {
 
     @PutMapping
     public ResponseEntity<ApiResponse<SessionData>> updateSession(@RequestBody SessionData sessionData) {
+        // 세션 존재 여부 확인
+        SessionData existingSession = sessionService.getSession(sessionData.getSessionId());
+        if (existingSession == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.fail("세션을 찾을 수 없습니다."));
+        }
+
+        // 세션 업데이트
         SessionData updated = sessionService.updateSession(sessionData);
         return ResponseEntity.ok(ApiResponse.success("세션 정보 업데이트 완료", updated));
     }
@@ -114,5 +136,23 @@ public class SessionController {
         // 실제 저장
         SessionData updated = sessionService.updateSession(existing);
         return ResponseEntity.ok(ApiResponse.success("세션 부분 업데이트 완료", updated));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<ApiResponse<SessionData>> searchSession(@RequestBody SessionSearchRequest request) {
+        log.info("세션 검색 요청: 사용자 {}, 비디오 {}", request.getUsername(), request.getVideoId());
+
+        // 세션 검색
+        SessionData existingSession = sessionService.findSessionByUserAndVideo(
+                request.getUserId().toString(), request.getVideoId());
+
+        if (existingSession != null) {
+            log.info("기존 세션 발견: {}", existingSession.getSessionId());
+            return ResponseEntity.ok(ApiResponse.success("기존 세션을 찾았습니다.", existingSession));
+        }
+
+        log.info("기존 세션 없음");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.fail("세션을 찾을 수 없습니다."));
     }
 }

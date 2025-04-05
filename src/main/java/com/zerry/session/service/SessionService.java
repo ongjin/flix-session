@@ -26,4 +26,13 @@ public interface SessionService {
     SessionData updateSession(SessionData sessionData);
 
     List<SessionData> deleteAllSessions();
+
+    /**
+     * 사용자 ID와 비디오 ID로 세션을 검색합니다.
+     * 
+     * @param userId  사용자 ID
+     * @param videoId 비디오 ID
+     * @return 검색된 세션 또는 null
+     */
+    SessionData findSessionByUserAndVideo(String userId, String videoId);
 }

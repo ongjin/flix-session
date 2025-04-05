@@ -18,12 +18,11 @@ public class SessionData {
     private String userId;
     private String deviceInfo;
     private String ipAddress;
-    private String sessionType;
     private String status;
-    private LocalDateTime lastAccessTimeStr;
-    private LocalDateTime createdAtStr;
-    private LocalDateTime expiresAtStr;
+    private LocalDateTime lastAccessTime;
+    private LocalDateTime createdAt;
+    private LocalDateTime expiresAt;
     private SessionType type;
     private Integer lastPosition;
-
+    private String videoId;
 }

@@ -1,6 +1,7 @@
 package com.zerry.session.service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,14 +33,39 @@ public class SessionServiceImpl implements SessionService {
             throw new IllegalArgumentException("userId is required");
         }
 
+        // 현재 시간 설정
+        LocalDateTime now = LocalDateTime.now();
+
+        // 동일한 사용자와 비디오 ID로 기존 세션이 있는지 확인
+        List<SessionData> existingSessions = sessionRepository.findByUserId(sessionData.getUserId());
+        for (SessionData existingSession : existingSessions) {
+            // 동일한 비디오 ID인 경우 기존 세션 업데이트
+            if (sessionData.getVideoId() != null &&
+                    sessionData.getVideoId().equals(existingSession.getVideoId())) {
+                log.info("동일한 비디오의 기존 세션 업데이트: {}", existingSession.getSessionId());
+
+                // 기존 세션 정보 업데이트
+                existingSession.setLastAccessTime(now);
+                existingSession.setStatus(SessionStatus.ACTIVE.name());
+                existingSession.setIpAddress(sessionData.getIpAddress());
+
+                // 만료 시간 갱신 (2주 후)
+                existingSession.setExpiresAt(now.plus(14, ChronoUnit.DAYS));
+
+                // 세션 업데이트
+                sessionRepository.update(existingSession);
+                return existingSession;
+            }
+        }
+
         // sessionId가 없는 경우 생성
         if (sessionData.getSessionId() == null || sessionData.getSessionId().trim().isEmpty()) {
             sessionData.setSessionId(UUID.randomUUID().toString());
         }
 
         // 기본값 설정
-        if (sessionData.getLastAccessTimeStr() == null) {
-            sessionData.setLastAccessTimeStr(LocalDateTime.now());
+        if (sessionData.getLastAccessTime() == null) {
+            sessionData.setLastAccessTime(now);
         }
         if (sessionData.getStatus() == null) {
             sessionData.setStatus(SessionStatus.ACTIVE.name());
@@ -47,6 +73,12 @@ public class SessionServiceImpl implements SessionService {
         if (sessionData.getType() == null) {
             sessionData.setType(determineSessionType(sessionData.getDeviceInfo()));
         }
+
+        // 생성 시간 설정
+        sessionData.setCreatedAt(now);
+
+        // 만료 시간 설정 (2주 후)
+        sessionData.setExpiresAt(now.plus(14, ChronoUnit.DAYS));
 
         sessionRepository.save(sessionData);
         return sessionData;
@@ -77,7 +109,7 @@ public class SessionServiceImpl implements SessionService {
     public SessionData refreshSession(String sessionId) {
         SessionData session = getSession(sessionId);
         if (session != null) {
-            session.setLastAccessTimeStr(LocalDateTime.now());
+            session.setLastAccessTime(LocalDateTime.now());
             sessionRepository.update(session);
             return session;
         }
@@ -133,5 +165,19 @@ public class SessionServiceImpl implements SessionService {
         List<SessionData> allSessions = getAllSessions();
         allSessions.forEach(session -> sessionRepository.deleteBySessionId(session.getSessionId()));
         return allSessions;
+    }
+
+    @Override
+    public SessionData findSessionByUserAndVideo(String userId, String videoId) {
+        log.info("세션 검색: 사용자 {}, 비디오 {}", userId, videoId);
+
+        // 사용자의 모든 세션 조회
+        List<SessionData> userSessions = sessionRepository.findByUserId(userId);
+
+        // 동일한 비디오에 대한 세션 찾기
+        return userSessions.stream()
+                .filter(session -> videoId.equals(session.getVideoId()))
+                .findFirst()
+                .orElse(null);
     }
 }

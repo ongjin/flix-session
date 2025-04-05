@@ -9,9 +9,11 @@ import org.springframework.stereotype.Repository;
 import com.zerry.session.dto.SessionData;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class SessionRedisRepository {
     private static final String SESSION_KEY_PREFIX = "session:";
     private static final String USER_SESSIONS_KEY_PREFIX = "user_sessions:";
@@ -22,12 +24,28 @@ public class SessionRedisRepository {
         String userSessionsKey = USER_SESSIONS_KEY_PREFIX + sessionData.getUserId();
 
         redisTemplate.opsForValue().set(sessionKey, sessionData);
-        redisTemplate.opsForList().rightPush(userSessionsKey, sessionData.getSessionId());
+        redisTemplate.opsForList().rightPush(userSessionsKey, sessionData.getSessionId().toString());
     }
 
     public Optional<SessionData> findBySessionId(String sessionId) {
         String key = SESSION_KEY_PREFIX + sessionId;
-        return Optional.ofNullable((SessionData) redisTemplate.opsForValue().get(key));
+        try {
+            Object value = redisTemplate.opsForValue().get(key);
+            if (value instanceof SessionData) {
+                return Optional.of((SessionData) value);
+            } else if (value instanceof String) {
+                // If we have a string value, it might be a session ID
+                log.warn("Found string value instead of SessionData for key: {}", key);
+                return Optional.empty();
+            } else if (value != null) {
+                log.warn("Unexpected value type for key {}: {}", key, value.getClass());
+                return Optional.empty();
+            }
+            return Optional.empty();
+        } catch (Exception e) {
+            log.error("Error retrieving session for key {}: {}", key, e.getMessage());
+            return Optional.empty();
+        }
     }
 
     public List<SessionData> findByUserId(String userId) {
@@ -39,7 +57,14 @@ public class SessionRedisRepository {
         }
 
         return sessionIds.stream()
-                .map(id -> findBySessionId((String) id))
+                .map(id -> {
+                    if (id instanceof String) {
+                        return findBySessionId((String) id);
+                    } else {
+                        log.warn("Unexpected session ID type: {}", id != null ? id.getClass() : "null");
+                        return Optional.<SessionData>empty();
+                    }
+                })
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
@@ -59,7 +84,18 @@ public class SessionRedisRepository {
 
     public List<SessionData> findAll() {
         return redisTemplate.keys(SESSION_KEY_PREFIX + "*").stream()
-                .map(key -> (SessionData) redisTemplate.opsForValue().get(key))
+                .map(key -> {
+                    try {
+                        Object value = redisTemplate.opsForValue().get(key);
+                        if (value instanceof SessionData) {
+                            return (SessionData) value;
+                        }
+                        return null;
+                    } catch (Exception e) {
+                        log.error("Error retrieving session for key {}: {}", key, e.getMessage());
+                        return null;
+                    }
+                })
                 .filter(session -> session != null)
                 .toList();
     }
