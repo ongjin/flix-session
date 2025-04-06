@@ -1,10 +1,10 @@
-package com.zerry.flix_session;
+package com.zerry.session;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FlixSessionApplicationTests {
+class SessionApplicationTests {
 
 	@Test
 	void contextLoads() {
