@@ -15,7 +15,7 @@ public interface SessionService {
 
     Optional<SessionData> deleteSession(String sessionId);
 
-    List<SessionData> getUserSessions(String userId);
+    List<SessionData> getUserSessions(Long userId);
 
     List<SessionData> getActiveSessions();
 
@@ -34,5 +34,5 @@ public interface SessionService {
      * @param videoId 비디오 ID
      * @return 검색된 세션 또는 null
      */
-    SessionData findSessionByUserAndVideo(String userId, String videoId);
+    SessionData findSessionByUserAndVideo(Long userId, String videoId);
 }

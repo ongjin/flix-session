@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SessionData {
     private String sessionId;
-    private String userId;
+    private Long userId;
     private String deviceInfo;
     private String ipAddress;
     private String status;

@@ -49,7 +49,7 @@ public class SessionRedisRepository {
         }
     }
 
-    public List<SessionData> findByUserId(String userId) {
+    public List<SessionData> findByUserId(Long userId) {
         String userSessionsKey = USER_SESSIONS_KEY_PREFIX + userId;
         List<Object> sessionIds = redisTemplate.opsForList().range(userSessionsKey, 0, -1);
 

@@ -31,7 +31,7 @@ public class SessionServiceImpl implements SessionService {
         }
 
         // 필수 필드 검증
-        if (sessionData.getUserId() == null || sessionData.getUserId().trim().isEmpty()) {
+        if (sessionData.getUserId() == null) {
             throw new IllegalArgumentException("userId is required");
         }
 
@@ -135,7 +135,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public List<SessionData> getUserSessions(String userId) {
+    public List<SessionData> getUserSessions(Long userId) {
         return sessionRepository.findByUserId(userId);
     }
 
@@ -176,7 +176,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionData findSessionByUserAndVideo(String userId, String videoId) {
+    public SessionData findSessionByUserAndVideo(Long userId, String videoId) {
         log.info("세션 검색: 사용자 {}, 비디오 {}", userId, videoId);
 
         // 사용자의 모든 세션 조회

@@ -62,7 +62,7 @@ public class SessionController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<SessionData>>> getUserSessions(@PathVariable String userId) {
+    public ResponseEntity<ApiResponse<List<SessionData>>> getUserSessions(@PathVariable Long userId) {
         List<SessionData> sessions = sessionService.getUserSessions(userId);
         return ResponseEntity.ok(ApiResponse.success("유저 세션 조회 완료", sessions));
     }
@@ -143,7 +143,7 @@ public class SessionController {
 
         // 세션 검색
         SessionData existingSession = sessionService.findSessionByUserAndVideo(
-                request.getUserId().toString(), request.getVideoId());
+                request.getUserId(), request.getVideoId());
 
         if (existingSession != null) {
             log.info("기존 세션 발견: {}", existingSession.getSessionId());
